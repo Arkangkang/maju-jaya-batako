@@ -9,6 +9,8 @@ import {
   MapPin,
   ChevronRight,
   Star,
+  Menu,
+  X,
 } from "lucide-react";
 
 import logoImg from "../../assets/logo.png";
@@ -56,6 +58,7 @@ const PARTNERS = [
 export default function Portfolio() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div
@@ -80,7 +83,7 @@ export default function Portfolio() {
           style={{
             maxWidth: "1200px",
             margin: "0 auto",
-            padding: "0 24px",
+            padding: "0 16px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -88,30 +91,44 @@ export default function Portfolio() {
           }}
         >
           {/* Logo */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
             <img
               src={logoImg}
               alt="MAJU JAYA BATAKO Logo"
               style={{
-                width: "40px",
-                height: "40px",
+                width: "36px",
+                height: "36px",
                 borderRadius: "8px",
                 objectFit: "contain",
+                flexShrink: 0,
               }}
             />
-            <span style={{ fontWeight: "700", fontSize: "18px" }}>
+            <span style={{
+              fontWeight: "700",
+              fontSize: "clamp(13px, 3.5vw, 18px)",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}>
               MAJU JAYA BATAKO
             </span>
           </div>
 
-          {/* Nav Links */}
-          <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
+          {/* Desktop Nav Links */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "24px",
+          }}
+            className="desktop-nav"
+          >
             <a
               href="#"
               style={{
                 color: "var(--color-orange)",
                 fontWeight: "600",
                 textDecoration: "none",
+                whiteSpace: "nowrap",
               }}
             >
               Portfolio
@@ -125,6 +142,7 @@ export default function Portfolio() {
                 cursor: "pointer",
                 fontWeight: "500",
                 fontSize: "15px",
+                whiteSpace: "nowrap",
               }}
             >
               Pemesanan Online
@@ -143,6 +161,7 @@ export default function Portfolio() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                flexShrink: 0,
               }}
             >
               {theme === "dark" ? (
@@ -152,8 +171,105 @@ export default function Portfolio() {
               )}
             </button>
           </div>
+
+          {/* Mobile: theme toggle + hamburger */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}
+            className="mobile-nav"
+          >
+            <button
+              onClick={toggleTheme}
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                border: "1px solid var(--color-border)",
+                backgroundColor: "var(--color-bg-secondary)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {theme === "dark" ? (
+                <Sun size={16} color="var(--color-orange)" />
+              ) : (
+                <Moon size={16} color="var(--color-text-muted)" />
+              )}
+            </button>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "8px",
+                border: "1px solid var(--color-border)",
+                backgroundColor: "var(--color-bg-secondary)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {menuOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {menuOpen && (
+          <div
+            className="mobile-nav"
+            style={{
+              borderTop: "1px solid var(--color-border)",
+              backgroundColor: "var(--color-bg)",
+              padding: "12px 16px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "4px",
+            }}
+          >
+            <a
+              href="#"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                color: "var(--color-orange)",
+                fontWeight: "600",
+                textDecoration: "none",
+                padding: "10px 12px",
+                borderRadius: "8px",
+                backgroundColor: "var(--color-bg-secondary)",
+              }}
+            >
+              Portfolio
+            </a>
+            <button
+              onClick={() => { setMenuOpen(false); navigate("/pesan"); }}
+              style={{
+                color: "var(--color-text-muted)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontWeight: "500",
+                fontSize: "15px",
+                textAlign: "left",
+                padding: "10px 12px",
+                borderRadius: "8px",
+              }}
+            >
+              Pemesanan Online
+            </button>
+          </div>
+        )}
       </nav>
+
+      <style>{`
+        .desktop-nav { display: flex !important; }
+        .mobile-nav { display: none !important; }
+        @media (max-width: 640px) {
+          .desktop-nav { display: none !important; }
+          .mobile-nav { display: flex !important; }
+        }
+      `}</style>
 
       {/* ===== HERO SECTION ===== */}
       <section
