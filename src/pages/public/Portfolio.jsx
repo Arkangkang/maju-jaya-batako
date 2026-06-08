@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../contexts/ThemeContext";
 import {
@@ -14,8 +14,20 @@ import {
 } from "lucide-react";
 
 import logoImg from "../../assets/logo.png";
-import heroBg from "../../assets/hero-bg.webp"; // GANTI → import heroBg from '../../assets/hero-bg.jpg'
-import productImg from "../../assets/product-batako.webp"; // GANTI → import productImg from '../../assets/product-batako.jpg'
+import heroBg1 from "../../assets/image/354dadda-c7fc-440d-99b5-e699e01ffe68.jpg";
+import heroBg2 from "../../assets/image/380e2c31-910b-4c20-b623-a63920ff3431.jpg";
+import heroBg3 from "../../assets/image/50b56e43-1047-4479-ae7a-fde47b9c146e.jpg";
+import heroBg4 from "../../assets/image/68785ac1-1ea2-4bcc-8cc5-6a22d29dda55.jpg";
+import heroBg5 from "../../assets/image/738930a2-6664-4f6a-9b37-96ceecc6a140.jpg";
+
+const HERO_BACKGROUNDS = [heroBg1, heroBg2, heroBg3, heroBg4, heroBg5];
+import productImg from "../../assets/image/product-batako.webp"; // GANTI → import productImg from '../../assets/image/product-batako.jpg'
+
+import logoHalim from "../../assets/Logo Portofolio/Halim.jpg";
+import logoSumBekasi from "../../assets/Logo Portofolio/Summarecon_Bekasi.svg";
+import logoCrownGading from "../../assets/Logo Portofolio/crown-gading-logo-circle.png";
+import logoNusantara from "../../assets/Logo Portofolio/Nusantara.jpeg";
+import logoPanjibuwono from "../../assets/Logo Portofolio/02d2c2e969cb4c.png";
 
 const COMPANY_INFO = {
   name: "MAJU JAYA BATAKO",
@@ -38,27 +50,35 @@ const COMPANY_INFO = {
 const PARTNERS = [
   {
     name: "Halim Perdana Kusuma",
-    project: "Proyek Residensial & Komersial",
-    icon: "🏢",
+    project: "Proyek Infrastruktur",
+    icon: <img src={logoHalim} alt="Halim Perdana Kusuma" style={{ height: "48px", width: "auto", objectFit: "contain" }} />,
   },
   {
     name: "Summarecon Bekasi",
     project: "Proyek Property Berskala Besar",
-    icon: "🏙️",
+    icon: <img src={logoSumBekasi} alt="Summarecon Bekasi" style={{ height: "48px", width: "auto", objectFit: "contain" }} />,
   },
   {
     name: "Summarecon Crown Gading",
     project: "Proyek Property Premium",
-    icon: "👑",
+    icon: <img src={logoCrownGading} alt="Summarecon Crown Gading" style={{ height: "48px", width: "auto", objectFit: "contain" }} />,
   },
-  { name: "Nusantara", project: "Proyek Infrastruktur", icon: "🏗️" },
-  { name: "Panjibuwono", project: "Proyek Pembangunan", icon: "🔨" },
+  { name: "Nusantara", project: "Proyek Property", icon: <img src={logoNusantara} alt="Nusantara" style={{ height: "48px", width: "auto", objectFit: "contain" }} /> },
+  { name: "Panjibuwono", project: "Proyek Pembangunan", icon: <img src={logoPanjibuwono} alt="Panjibuwono" style={{ height: "48px", width: "auto", objectFit: "contain" }} /> },
 ];
 
 export default function Portfolio() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentBgIndex, setCurrentBgIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBgIndex((prevIndex) => (prevIndex + 1) % HERO_BACKGROUNDS.length);
+    }, 5000); // Ganti gambar setiap 5 detik
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div
@@ -225,21 +245,26 @@ export default function Portfolio() {
 
       {/* ===== HERO SECTION ===== */}
       <section className="portfolio-hero">
-        {/* Background Image */}
-        <div
-          className="portfolio-hero-bg"
-          style={{
-            backgroundImage: `url('${heroBg}')`,
-          }}
-        />
+        {/* Background Image Carousel */}
+        {HERO_BACKGROUNDS.map((bg, index) => (
+          <div
+            key={index}
+            className="portfolio-hero-bg"
+            style={{
+              backgroundImage: `url('${bg}')`,
+              opacity: currentBgIndex === index ? 1 : 0,
+              transition: "opacity 1.5s ease-in-out",
+            }}
+          />
+        ))}
         {/* Overlay untuk readability — lebih kuat agar teks jelas */}
         <div
           className="portfolio-hero-overlay"
           style={{
             backgroundColor:
               theme === "dark"
-                ? "rgba(0, 0, 0, 0.82)"
-                : "rgba(255, 253, 248, 0.92)",
+                ? "rgba(0, 0, 0, 0.6)"
+                : "rgba(255, 255, 255, 0.6)",
           }}
         />
         <div className="portfolio-hero-content">
@@ -265,7 +290,7 @@ export default function Portfolio() {
                 <br />
                 <span style={{ color: "var(--color-orange)" }}>Batako</span>
               </h1>
-              <p className="portfolio-hero-desc">
+              <p className="portfolio-hero-desc" style={{ color: theme === "dark" ? "#ffffff" : "#000000", fontWeight: "500" }}>
                 {COMPANY_INFO.description}
               </p>
               <div className="portfolio-hero-buttons">
@@ -377,7 +402,7 @@ export default function Portfolio() {
                     "0 2px 12px var(--color-shadow)";
                 }}
               >
-                <div style={{ fontSize: "36px", marginBottom: "12px" }}>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "16px", minHeight: "60px" }}>
                   {partner.icon}
                 </div>
                 <h4
@@ -421,11 +446,7 @@ export default function Portfolio() {
               title="Alamat"
               value={COMPANY_INFO.location}
             />
-            <ContactCard
-              icon={<Phone size={24} color="var(--color-orange)" />}
-              title="Telepon"
-              value={COMPANY_INFO.phone}
-            />
+
             <ContactCard
               icon={<MessageCircle size={24} color="var(--color-orange)" />}
               title="WhatsApp"
